@@ -22,10 +22,11 @@ set pastetoggle=<F2>
 
 let mapleader = ","
 
-" set keymappings for quit and safe
-noremap <Leader>Q :quit!<CR>
-noremap <Leader>q :quit<CR>
-noremap <Leader>z :update<CR>
+" remap split switches
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
 
 " set keymappings for tabs
 inoremap <Leader>m :tabnext<CR>
@@ -91,7 +92,12 @@ set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
 set t_Co=256
 
 " NERDtree
-autocmd vimenter * NERDTree
+"open on every file
+"autocmd vimenter * NERDTree
+"open if no file specified
+autocmd vimenter * if !argc() | NERDTree | endif
+"close when last file is closed
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 map <C-n> :NERDTreeToggle<CR>
 
 syn on
