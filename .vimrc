@@ -1,3 +1,5 @@
+colorscheme vividchalk
+set hidden
 set colorcolumn=80
 set expandtab
 set hlsearch
@@ -87,6 +89,10 @@ set laststatus=2
 set noshowmode
 set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
 set t_Co=256
+
+" NERDtree
+autocmd vimenter * NERDTree
+map <C-n> :NERDTreeToggle<CR>
 
 syn on
 filetype on
