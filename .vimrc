@@ -53,6 +53,18 @@ au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 au InsertLeave * match ExtraWhitespace /\s\+$/
 highlight ColorColumn ctermbg=blue
 
+" Json
+au! BufRead,BufNewFile *.json set filetype=json
+augroup json_autocmd
+  autocmd!
+  autocmd FileType json set autoindent
+  autocmd FileType json set formatoptions=tcq2l
+  autocmd FileType json set textwidth=78 shiftwidth=2
+  autocmd FileType json set softtabstop=2 tabstop=8
+  autocmd FileType json set expandtab
+  autocmd FileType json set foldmethod=syntax
+augroup END
+
 " Puppet
 au BufRead,BufNewFile *.pp set filetype=puppet
 au! Syntax puppet source $VIM/syntax/puppet.vim
@@ -107,3 +119,26 @@ syn on
 filetype on
 filetype plugin on
 filetype plugin indent on
+
+
+""" Functions
+" Shell ------------------------------------------------------------------- {{{
+
+function! ExecuteInShell(command) " {{{
+    let command = join(map(split(a:command), 'expand(v:val)'))
+    let winnr = bufwinnr('^' . command . '$')
+    silent! execute  winnr < 0 ? 'botright new ' . fnameescape(command) : winnr . 'wincmd w'
+    setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap nonumber
+    echo 'Execute ' . command . '...'
+    silent! execute 'silent %!'. command
+    silent! redraw
+    silent! execute 'au BufUnload <buffer> execute bufwinnr(' . bufnr('#') . ') . ''wincmd w'''
+    silent! execute 'nnoremap <silent> <buffer> <LocalLeader>r :call <SID>ExecuteInShell(''' . command . ''')<CR>:AnsiEsc<CR>'
+    silent! execute 'nnoremap <silent> <buffer> q :q<CR>'
+    silent! execute 'AnsiEsc'
+    echo 'Shell command ' . command . ' executed.'
+endfunction " }}}
+command! -complete=shellcmd -nargs=+ Shell call ExecuteInShell(<q-args>)
+nnoremap <leader>! :Shell
+
+" }}}
