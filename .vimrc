@@ -103,7 +103,7 @@ set encoding=utf-8
 set fillchars+=stl:\ ,stlnc:\
 set laststatus=2
 set noshowmode
-set rtp+=~/.local/lib/python2.7/site-packages/powerline/bindings/vim
+set rtp+=~/.vim/bundle/powerline/powerline/bindings/vim/
 set t_Co=256
 
 " NERDtree
