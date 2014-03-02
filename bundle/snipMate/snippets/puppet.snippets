@@ -151,7 +151,9 @@ snippet File
 	  group   => '${2:root}',
 	  mode    => '${3:0644}',
 	}
-snippet apt::source
+#
+# apt
+snippet apt source
 	apt::source{ '${1:apt_source}':
 	  location    => '${2:url}',
 	  release     => '${3:stable}',
@@ -161,11 +163,23 @@ snippet apt::source
 	  pin         => '${7:-10}',
 	  include_src => ${8:false},
 	}
-snippet apt::pin
+snippet apt pin
 	apt::pin{ '${1:squeeze}': priority => ${2:700} }
 snippet apt::key
 	apt::key{ '${1:repo_key}':
-	  key         => '${5:key id}',
-	  key_server  => '${6:pgp.mit.edu}',
+	  key         => '${2:key id}',
+	  key_server  => '${3:pgp.mit.edu}',
 	}
-
+#
+# puppetlabs/vcsrepo
+snippet vcsrepo
+	vcsrepo{ '${1:path}: }'
+snippet git
+	vcsrepo{ '${1:path}':
+	  ensure     => ${2:latest},
+	  providder  => ${3:git},
+	  source     => '${4:https://github.com/}',
+	  owner      => '${5:root}',
+	  group      => '${5:root}',
+	  force      => true,
+	}
