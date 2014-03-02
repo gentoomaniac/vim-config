@@ -6,42 +6,42 @@
 # Language Constructs
 snippet class
 	class ${1:`Filename('', 'name')`} {
-		${2}
+	  ${2}
 	}
 snippet node
 	node "${1:`Filename('', 'fqdn')`}" {
-		${2}
+	  ${2}
 	}
 snippet case
 	case $${1:variable} {
-		default: { ${2} }
+	  default: { ${2} }
 	}
 snippet ife
 	if $${1:variable} {
-		${2}
+	  ${2}
 	} else {
-		${3}
+	  ${3}
 	}
 snippet if
 	if $${1:variable} {
-		${2}
+	  ${2}
 	}
 snippet else
-	else {
-		${1}
+	ele {
+	  ${1}
 	}
 snippet ?
 	? {
-		'${1}'	=> ${2}
+	  '${1}'  => ${2}
 	  }
 #
 # blocks etc and general syntax sugar
 snippet [
 	[ ${1} ]${2}
 snippet >
-	${1}	=> ${2}
+	${1} => ${2}
 snippet p:
-	"puppet://puppet/${1:module name}/${2:file name}"
+	'puppet:///modules/${1:module name}/${2:file name}'
 #
 # Functions
 snippet alert
@@ -84,66 +84,88 @@ snippet warning
 # Types
 snippet cron
 	cron{'${1:name}':
-		command => '${2}',
-		user    => '${3:root}',
-		${4}    => ${5}
+	  command => '${2}',
+	  user    => '${3:root}',
+	  ${4}    => ${5}
 	}
 snippet exec
 	exec{'${1:name}':
-		command => '${2:$1}',
-		user    => '${3:root}',
-		${4}    => ${5}
+	  command => '${2:$1}',
+	  user    => '${3:root}',
+	  ${4}    => ${5}
 	}
 snippet user
 	user{'${1:user}':
-		comment     => '${2:$1}',
-		ensure      => present,
-		managehome  => true,
-		home        => '${3:/home/$1}'
+	  ensure      => present,
+	  comment     => '${2:$1}',
+	  managehome  => true,
+	  home        => '${3:/home/$1}'
 	}
 snippet group
 	group{'${1:group}':
-		ensure  => ${2:present}
+	  ensure  => ${2:present}
 	}
 snippet host
 	host{'${1:hostname}':
-		ip  => ${2:127.0.0.1}
+	  ip  => ${2:127.0.0.1}
 	}
 snippet mailalias
 	mailalias{'${1:localpart}':
-		recipient  => '${2:recipient}'
+	  recipient  => '${2:recipient}'
 	}
 snippet mount
 	mount{'${1:destination path}':
-		ensure  => ${2:mounted},
-		device  => '${3:device name or path}'
+	  ensure  => ${2:mounted},
+	  device  => '${3:device name or path}'
 	}
 snippet package
 	package{'${1:package name}':
-		ensure  => ${2:present}
+	  ensure  => ${2:present}
 	}
 snippet yumrepo
 	yumrepo{'${1:repo name}':
-		descr   => '${2:$1}',
-		enabled => ${3:1}
+	  descr   => '${2:$1}',
+	  enabled => ${3:1}
 	}
 snippet define
 	define ${1} (${2}) {
-		${3}
+	  ${3}
 	}
 snippet service
 	service{'${1:service}':
-		enable      => ${2:true},
-		ensure      => ${3:running},
-		hasstatus   => true,
+	  ensure      => ${3:running},
+	  enable      => ${2:true},
+	  hasstatus   => true,
 	}
 snippet file
 	file{'${1:path}':
-		${2}  => ${3}
+	  ensure  => '${2:file}',
+	  owner   => '${3:root}',
+	  group   => '${4:root}',
+	  mode    => '${5:0600}',
+	  source  => '${6:puppet:///modules/}'
 	}
 snippet File
 	File{
-		user    => '${1:root}',
-		group   => '${2:root}',
-		mode    => '${3:0644}',
+	  user    => '${1:root}',
+	  group   => '${2:root}',
+	  mode    => '${3:0644}',
 	}
+snippet apt::source
+	apt::source{ '${1:apt_source}':
+	  location    => '${2:url}',
+	  release     => '${3:stable}',
+	  repos       => '${4:main contrib non-free}',
+	  key         => '${5:key id}',
+	  key_server  => '${6:pgp.mit.edu}',
+	  pin         => '${7:-10}',
+	  include_src => ${8:false},
+	}
+snippet apt::pin
+	apt::pin{ '${1:squeeze}': priority => ${2:700} }
+snippet apt::key
+	apt::key{ '${1:repo_key}':
+	  key         => '${5:key id}',
+	  key_server  => '${6:pgp.mit.edu}',
+	}
+
