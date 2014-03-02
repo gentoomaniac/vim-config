@@ -137,14 +137,18 @@ snippet service
 	  enable      => ${2:true},
 	  hasstatus   => true,
 	}
-snippet file
+snippet file file
 	file{'${1:path}':
-	  ensure  => '${2:file}',
-	  owner   => '${3:root}',
-	  group   => '${4:root}',
-	  mode    => '${5:0600}',
-	  source  => '${6:puppet:///modules/}'
+	  ensure    => ${2:file},
+	  owner     => '${3:root}',
+	  group     => '${4:root}',
+	  mode      => '${5:0600}',
+	  source    => '${6:puppet:///modules/}'
 	}
+snippet file link
+	file{'${1:path}':
+	  ensure    => link,
+	  target    => '${2:path}'
 snippet File
 	File{
 	  user    => '${1:root}',
@@ -165,7 +169,7 @@ snippet apt source
 	}
 snippet apt pin
 	apt::pin{ '${1:squeeze}': priority => ${2:700} }
-snippet apt::key
+snippet apt key
 	apt::key{ '${1:repo_key}':
 	  key         => '${2:key id}',
 	  key_server  => '${3:pgp.mit.edu}',
@@ -173,11 +177,9 @@ snippet apt::key
 #
 # puppetlabs/vcsrepo
 snippet vcsrepo
-	vcsrepo{ '${1:path}: }'
-snippet git
 	vcsrepo{ '${1:path}':
 	  ensure     => ${2:latest},
-	  providder  => ${3:git},
+	  provider   => ${3:git},
 	  source     => '${4:https://github.com/}',
 	  owner      => '${5:root}',
 	  group      => '${5:root}',
