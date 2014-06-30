@@ -70,6 +70,7 @@ au BufRead,BufNewFile *.pp set filetype=puppet
 au! Syntax puppet source $VIM/syntax/puppet.vim
 autocmd FileType puppet setlocal shiftwidth=2 tabstop=2
 
+
 " automaticallyi trim trailing whitespaces on save
 autocmd BufWritePre * :%s/\s\+$//e
 " automatically give executable permissions if file begins with #! and contains '/bin/' in the path
