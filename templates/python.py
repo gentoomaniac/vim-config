@@ -8,9 +8,11 @@
 import logging
 
 FORMAT = '%(asctime)-15s - %(message)s'
-logging.basicConfig(format=FORMAT)
 LOGGER = logging.getLogger('scriptlogger')
-LOGGER.setLevel(logging.INFO)
+LOGGER.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setFormatter(logging.Formatter(FORMAT))
+LOGGER.addHandler(ch)
 
 def main():
     """ main program
