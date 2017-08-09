@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """ Sample Script
-    Version 0.2
+    Version 0.2.1
 """
 
 import argparse
@@ -11,10 +11,11 @@ import os
 import sys
 
 log = None
+log_level = logging.INFO
 
 def setup_logger(
-        name="samplescript",
-        format="%(asctime)-15s %(name)-12s %(levelname)-8s %(message)s",
+        name="global",
+        format="%(asctime)-15s {} / %(name)-12s %(levelname)-8s %(message)s".format(os.path.basename(__file__)),
         level=logging.INFO):
     l = logging.getLogger(name)
     ch = logging.StreamHandler()
@@ -24,8 +25,8 @@ def setup_logger(
     return l
 
 
-def set_loglevel(level):
-    log.setLevel(getattr(logging, level))
+def set_loglevel(logger, level):
+    logger.setLevel(getattr(logging, level))
 
 
 def setup_argparse(description):
@@ -39,13 +40,15 @@ def main():
     """ main program
     """
     global log
-    log = setup_logger(name=os.path.basename(__file__))
+    log = setup_logger()
+    local_log = setup_logger(name="{}()".format(sys._getframe().f_code.co_name))
 
     parser = setup_argparse("Sample script")
     args = parser.parse_args(sys.argv[1:])
 
-    set_loglevel(args.loglevel)
+    set_loglevel(log, args.loglevel)
     log.info('I am an informational log entry in the sample script.')
+    local_log.info('I am a message from the local logger in main()')
 
 
 if __name__ == '__main__':
