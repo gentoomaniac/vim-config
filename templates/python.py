@@ -1,52 +1,43 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """ Sample Script
     Version 0.2.1
 """
 
-import argparse
 import logging
 import sys
 
-log = None
-
-def setup_logger(
-        name="global",
-        format="%(asctime)-15s %(filename)s:%(lineno)s %(funcName)20s() %(levelname)-8s - %(message)s",
-        level=logging.DEBUG):
-    l = logging.getLogger(name)
-    ch = logging.StreamHandler()
-    ch.setFormatter(logging.Formatter(format))
-    l.addHandler(ch)
-    l.setLevel(level)
-    return l
+import click
 
 
-def set_loglevel(logger, level):
-    logger.setLevel(getattr(logging, level))
+log = logging.getLogger(__file__)
 
 
-def setup_argparse(description):
-    log.debug("Setting up argparse ...")
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('--loglevel', dest='loglevel', default="INFO", help='set logging level',
-                        choices=[l for l in sorted(logging._levelNames.keys()) if isinstance(l, str)])
-    return parser
+def _configure_logging(verbosity):
+    loglevel = max(3 - verbosity, 0) * 10
+    logging.basicConfig(level=loglevel, format='[%(asctime)s] %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    if loglevel >= logging.DEBUG:
+        # Disable debugging logging for external libraries
+        for loggername in 'urllib3', 'google.auth.transport.requests':
+            logging.getLogger(loggername).setLevel(logging.CRITICAL)
 
 
-def main():
+@click.group()
+@click.option('-v', '--verbosity', help='Verbosity', default=0, count=True)
+def cli(verbosity: int):
     """ main program
     """
-    global log
-    log = setup_logger()
+    _configure_logging(verbosity)
 
-    parser = setup_argparse("Sample script")
-    args = parser.parse_args(sys.argv[1:])
-
-    set_loglevel(log, args.loglevel)
     log.info('I am an informational log entry in the sample script.')
+    return 0
+
+
+@cli.command(name='foo')
+def foobar():
+    print("bar")
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(cli())
