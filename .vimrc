@@ -1,6 +1,6 @@
 colorscheme vividchalk
 set hidden
-set colorcolumn=80
+set colorcolumn=120
 set expandtab
 set hlsearch
 set incsearch

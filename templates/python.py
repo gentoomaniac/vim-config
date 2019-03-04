@@ -40,4 +40,5 @@ def foobar():
 
 
 if __name__ == '__main__':
+    # pylint: disable=E1120
     sys.exit(cli())
