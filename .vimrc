@@ -90,6 +90,11 @@ function PreparePython()
     r ~/.vim/templates/python.py
     1d
 endfunction
+au BufNewFile main.go call PrepareGoMain()
+function PrepareGoMain()
+    r ~/.vim/templates/golang.go
+    1d
+endfunction
 
 
 " PLUGINS
