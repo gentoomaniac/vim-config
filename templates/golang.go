@@ -1,11 +1,17 @@
 package main
 
 import (
+	"io/ioutil"
+	"log"
 	"os"
+	"regexp"
+	"time"
 
 	"github.com/alecthomas/kong"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	zlog "github.com/rs/zerolog/log"
+
+	"github.com/briandowns/spinner"
 )
 
 var (
@@ -17,7 +23,7 @@ var cli struct {
 	Verbose int   `short:"v" help:"Increase verbosity." type:"counter"`
 	Quiet   bool  `short:"q" help:"Do not run upgrades."`
 	Json    bool  `help:"Log as json"`
-    Regex   regex `help:"Some parameter with custom validator" default:".*"`
+	Regex   regex `help:"Some parameter with custom validator" default:".*"`
 
 	Foo struct {
 	} `cmd help:"FooBar command"`
@@ -42,27 +48,33 @@ func setupLogging(verbosity int, logJson bool, quiet bool) {
 		// 1 is zerolog.InfoLevel
 		zerolog.SetGlobalLevel(zerolog.Level(1 - verbosity))
 		if !logJson {
-			log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+			zlog.Logger = zlog.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		}
 	} else {
 		zerolog.SetGlobalLevel(zerolog.Disabled)
+		log.SetFlags(0)
+		log.SetOutput(ioutil.Discard)
 	}
 }
 
 func main() {
+	spin := spinner.New(spinner.CharSets[11], 100*time.Millisecond) // Build our new spinner
 	ctx := kong.Parse(&cli, kong.UsageOnError(), kong.Vars{
 		"version": version,
 	})
 	setupLogging(cli.Verbose, cli.Json, cli.Quiet)
 
-	switch cliContext.Command() {
+	switch ctx.Command() {
 	case "foo":
-		log.Info().Msg("Bar")
+		zlog.Info().Msg("Bar")
+		spin.Prefix = "Sleep a while with spinner      "
+		spin.Start()
+		time.Sleep(10 * time.Second)
+		spin.Stop()
 
 	default:
-		log.Info().Msg("Default command")
-		log.Debug().Str("regex", cli.Regex.String()).Msg("debug message with extra values")
+		zlog.Info().Msg("Default command")
+		zlog.Debug().Str("regex", cli.Regex.String()).Msg("debug message with extra values")
 	}
 	ctx.Exit(0)
 }
-
